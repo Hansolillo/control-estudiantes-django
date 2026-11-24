@@ -1,0 +1,81 @@
+{% extends 'alumnos/base.html' %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ e.first_name }} {{ e.last_name }} {{ e.middle_name }}</h1>
+    <div class="d-flex gap-2">
+        <a href="{% url 'editar' e.student_id %}" class="btn btn-dark btn-sm">Editar datos</a>
+        <a href="{% url 'lista' %}" class="btn btn-outline-secondary btn-sm">← Volver</a>
+    </div>
+</div>
+
+<div class="card card-body mb-3">
+    <h2 class="h6 text-muted">Datos personales</h2>
+    <div class="row">
+        <div class="col-md-3"><small class="text-muted">ID</small><div>{{ e.student_id }}</div></div>
+        <div class="col-md-3"><small class="text-muted">Género</small><div>{{ e.get_gender_display }}</div></div>
+        <div class="col-md-3"><small class="text-muted">Registrado</small><div>{{ e.created_on|date:"d/m/Y H:i" }}</div></div>
+        <div class="col-md-3"><small class="text-muted">Última modificación</small><div>{{ e.updated_on|date:"d/m/Y H:i" }}</div></div>
+    </div>
+</div>
+
+<div class="card card-body mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h6 text-muted mb-0">Correos</h2>
+        <a href="{% url 'dato_nuevo' e.student_id 'email' %}" class="btn btn-outline-dark btn-sm">+ Agregar</a>
+    </div>
+    {% for c in e.emails.all %}
+    <div class="py-1 d-flex justify-content-between align-items-center">
+        <span>{{ c.email }} <span class="badge text-bg-light border">{{ c.get_email_type_display }}</span></span>
+        <div class="d-flex gap-2">
+            <a href="{% url 'dato_editar' e.student_id 'email' c.email %}" class="btn btn-outline-secondary btn-sm">Editar</a>
+            <form method="post" action="{% url 'eliminar_dato' 'email' c.email %}" onsubmit="return confirm('¿Eliminar este correo?');">
+                {% csrf_token %}<button class="btn btn-outline-danger btn-sm">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-muted">Sin correos registrados.</div>
+    {% endfor %}
+</div>
+
+<div class="card card-body mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h6 text-muted mb-0">Teléfonos</h2>
+        <a href="{% url 'dato_nuevo' e.student_id 'phone' %}" class="btn btn-outline-dark btn-sm">+ Agregar</a>
+    </div>
+    {% for t in e.phones.all %}
+    <div class="py-1 d-flex justify-content-between align-items-center">
+        <span>+{{ t.country_code }} ({{ t.area_code }}) {{ t.phone }} <span class="badge text-bg-light border">{{ t.get_phone_type_display }}</span></span>
+        <div class="d-flex gap-2">
+            <a href="{% url 'dato_editar' e.student_id 'phone' t.phone_id %}" class="btn btn-outline-secondary btn-sm">Editar</a>
+            <form method="post" action="{% url 'eliminar_dato' 'phone' t.phone_id %}" onsubmit="return confirm('¿Eliminar este teléfono?');">
+                {% csrf_token %}<button class="btn btn-outline-danger btn-sm">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-muted">Sin teléfonos registrados.</div>
+    {% endfor %}
+</div>
+
+<div class="card card-body mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h6 text-muted mb-0">Direcciones</h2>
+        <a href="{% url 'dato_nuevo' e.student_id 'address' %}" class="btn btn-outline-dark btn-sm">+ Agregar</a>
+    </div>
+    {% for d in e.addresses.all %}
+    <div class="py-1 d-flex justify-content-between align-items-center">
+        <span>{{ d.address_line }}, {{ d.city }}, {{ d.state }}, C.P. {{ d.zip_postcode }}</span>
+        <div class="d-flex gap-2">
+            <a href="{% url 'dato_editar' e.student_id 'address' d.address_id %}" class="btn btn-outline-secondary btn-sm">Editar</a>
+            <form method="post" action="{% url 'eliminar_dato' 'address' d.address_id %}" onsubmit="return confirm('¿Eliminar esta dirección?');">
+                {% csrf_token %}<button class="btn btn-outline-danger btn-sm">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-muted">Sin direcciones registradas.</div>
+    {% endfor %}
+</div>
+{% endblock %}

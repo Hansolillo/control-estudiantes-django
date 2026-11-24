@@ -1,0 +1,107 @@
+{% extends 'alumnos/base.html' %}
+
+{% block contenido %}
+<h1 class="h4 mb-3">Nuevo estudiante</h1>
+
+{% if errores %}
+<div class="alert alert-danger">
+    <ul class="mb-0">
+        {% for e in errores %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="post" class="card card-body">
+    {% csrf_token %}
+
+    <h2 class="h6 text-muted">Datos personales</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Nombre(s) *</label>
+            <input name="first_name" class="form-control" value="{{ datos.first_name }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Apellido paterno *</label>
+            <input name="last_name" class="form-control" value="{{ datos.last_name }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Apellido materno</label>
+            <input name="middle_name" class="form-control" value="{{ datos.middle_name }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Género *</label>
+            <select name="gender" class="form-select" required>
+                <option value="">Selecciona...</option>
+                {% for valor, texto in generos %}
+                <option value="{{ valor }}" {% if datos.gender == valor %}selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <h2 class="h6 text-muted">Correo</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-md-8">
+            <label class="form-label">Correo *</label>
+            <input name="email" type="email" class="form-control" value="{{ datos.email }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Tipo</label>
+            <select name="email_type" class="form-select">
+                {% for valor, texto in tipos_email %}
+                <option value="{{ valor }}" {% if datos.email_type == valor %}selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <h2 class="h6 text-muted">Teléfono</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <label class="form-label">País *</label>
+            <input name="country_code" class="form-control" value="{{ datos.country_code|default:'52' }}" maxlength="5" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Lada *</label>
+            <input name="area_code" class="form-control" value="{{ datos.area_code|default:'81' }}" maxlength="5" required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Número *</label>
+            <input name="phone" class="form-control" value="{{ datos.phone }}" maxlength="30" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Tipo</label>
+            <select name="phone_type" class="form-select">
+                {% for valor, texto in tipos_tel %}
+                <option value="{{ valor }}" {% if datos.phone_type == valor %}selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <h2 class="h6 text-muted">Dirección</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <label class="form-label">Calle y número *</label>
+            <input name="address_line" class="form-control" value="{{ datos.address_line }}" maxlength="100" required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Ciudad *</label>
+            <input name="city" class="form-control" value="{{ datos.city }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Estado *</label>
+            <input name="state" class="form-control" value="{{ datos.state }}" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Código postal *</label>
+            <input name="zip_postcode" class="form-control" value="{{ datos.zip_postcode }}" required>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-dark">Guardar</button>
+        <a href="{% url 'lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

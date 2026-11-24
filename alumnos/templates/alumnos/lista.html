@@ -1,0 +1,51 @@
+{% extends 'alumnos/base.html' %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Estudiantes</h1>
+    <a href="{% url 'alta' %}" class="btn btn-dark btn-sm">+ Nuevo estudiante</a>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <input name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre, apellido o correo...">
+    <button type="submit" class="btn btn-dark">Buscar</button>
+    {% if q %}<a href="{% url 'lista' %}" class="btn btn-outline-secondary">Limpiar</a>{% endif %}
+</form>
+
+<div class="card">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Género</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in estudiantes %}
+            <tr>
+                <td>{{ e.student_id }}</td>
+                <td>{{ e.first_name }} {{ e.last_name }} {{ e.middle_name }}</td>
+                <td>{{ e.get_gender_display }}</td>
+                <td class="text-end">
+                    <a href="{% url 'detalle' e.student_id %}" class="btn btn-outline-secondary btn-sm">Ver</a>
+                    <a href="{% url 'editar' e.student_id %}" class="btn btn-outline-secondary btn-sm">Editar</a>
+                    <form method="post" action="{% url 'eliminar' e.student_id %}" class="d-inline"
+                          onsubmit="return confirm('¿Eliminar a {{ e.first_name|escapejs }} {{ e.last_name|escapejs }} y toda su información?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                    {% if q %}No se encontraron resultados para "{{ q }}".{% else %}No hay estudiantes registrados.{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

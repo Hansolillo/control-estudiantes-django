@@ -1,0 +1,74 @@
+{% extends 'alumnos/base.html' %}
+
+{% block contenido %}
+<h1 class="h4 mb-1">{% if editando %}Editar{% else %}Agregar{% endif %} {{ nombre }}</h1>
+<p class="text-muted mb-3">{{ e.first_name }} {{ e.last_name }} {{ e.middle_name }}</p>
+
+{% if errores %}
+<div class="alert alert-danger">
+    <ul class="mb-0">{% for x in errores %}<li>{{ x }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<form method="post" class="card card-body">
+    {% csrf_token %}
+    <div class="row g-3 mb-4">
+    {% if tipo == 'email' %}
+        <div class="col-md-8">
+            <label class="form-label">Correo *</label>
+            <input name="email" type="email" class="form-control" value="{{ datos.email }}" maxlength="100" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Tipo</label>
+            <select name="email_type" class="form-select">
+                {% for v, t in tipos_email %}
+                <option value="{{ v }}" {% if datos.email_type == v %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% elif tipo == 'phone' %}
+        <div class="col-md-2">
+            <label class="form-label">País *</label>
+            <input name="country_code" class="form-control" value="{{ datos.country_code|default:'52' }}" maxlength="5" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Lada *</label>
+            <input name="area_code" class="form-control" value="{{ datos.area_code|default:'81' }}" maxlength="5" required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Número *</label>
+            <input name="phone" class="form-control" value="{{ datos.phone }}" maxlength="30" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Tipo</label>
+            <select name="phone_type" class="form-select">
+                {% for v, t in tipos_tel %}
+                <option value="{{ v }}" {% if datos.phone_type == v %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% else %}
+        <div class="col-md-12">
+            <label class="form-label">Calle y número *</label>
+            <input name="address_line" class="form-control" value="{{ datos.address_line }}" maxlength="100" required>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Ciudad *</label>
+            <input name="city" class="form-control" value="{{ datos.city }}" maxlength="45" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Estado *</label>
+            <input name="state" class="form-control" value="{{ datos.state }}" maxlength="45" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Código postal *</label>
+            <input name="zip_postcode" class="form-control" value="{{ datos.zip_postcode }}" maxlength="45" required>
+        </div>
+    {% endif %}
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-dark">Guardar</button>
+        <a href="{% url 'detalle' e.student_id %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

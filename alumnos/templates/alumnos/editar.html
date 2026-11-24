@@ -1,0 +1,41 @@
+{% extends 'alumnos/base.html' %}
+
+{% block contenido %}
+<h1 class="h4 mb-3">Editar estudiante #{{ e.student_id }}</h1>
+
+{% if errores %}
+<div class="alert alert-danger">
+    <ul class="mb-0">{% for x in errores %}<li>{{ x }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<form method="post" class="card card-body">
+    {% csrf_token %}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Nombre(s) *</label>
+            <input name="first_name" class="form-control" value="{{ datos.first_name }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Apellido paterno *</label>
+            <input name="last_name" class="form-control" value="{{ datos.last_name }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Apellido materno</label>
+            <input name="middle_name" class="form-control" value="{{ datos.middle_name }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Género *</label>
+            <select name="gender" class="form-select" required>
+                {% for valor, texto in generos %}
+                <option value="{{ valor }}" {% if datos.gender == valor %}selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-dark">Guardar cambios</button>
+        <a href="{% url 'detalle' e.student_id %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
