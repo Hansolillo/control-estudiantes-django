@@ -8,6 +8,7 @@ Cómo ejecutarlo:
    python -m venv venv
    venv\Scripts\activate
    pip install -r requirements.txt
+   python manage.py migrate alumnos --fake
    python manage.py migrate
    python manage.py runserver
 4. Abrir http://127.0.0.1:8000
